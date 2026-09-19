@@ -11,7 +11,7 @@ Custom decrypter and hoster plugins for [JDownloader 2](https://jdownloader.org/
 - **Type**: Decrypter / Crawler (`jd.plugins.PluginForDecrypt`)
 - **Supported URLs**: `https://filmo.to/movies/<slug>`
 - **Source**: [`src/jd/plugins/decrypter/FilmoTo.java`](src/jd/plugins/decrypter/FilmoTo.java)
-- **Precompiled**: [`dist/jd/plugins/decrypter/FilmoTo.class`](dist/jd/plugins/decrypter/FilmoTo.class)
+- **Download**: Available as precompiled `.class` / `.zip` in [Releases](https://github.com/Bluscream/jdownloader-plugins/releases)
 
 #### How it works:
 1. Matches `https://filmo.to/movies/<slug>` links added to LinkGrabber.
@@ -24,14 +24,14 @@ Custom decrypter and hoster plugins for [JDownloader 2](https://jdownloader.org/
 
 ## Installation
 
-### Easy (Precompiled)
-1. Copy the compiled `.class` file into your JDownloader installation's plugin directory:
+1. Download `FilmoTo.class` from the [Latest Release](https://github.com/Bluscream/jdownloader-plugins/releases/latest).
+2. Copy `FilmoTo.class` into your JDownloader installation's plugin directory:
    ```bash
-   cp dist/jd/plugins/decrypter/FilmoTo.class <jdownloader_dir>/jd/plugins/decrypter/
+   cp FilmoTo.class <jdownloader_dir>/jd/plugins/decrypter/
    ```
    *(For Docker / Unraid installations, this is typically `/mnt/user/appdata/jdownloader/jd/plugins/decrypter/`)*.
-2. Restart JDownloader to load the new plugin.
-3. Paste any supported URL into JDownloader LinkGrabber.
+3. Restart JDownloader to load the new plugin.
+4. Paste any `https://filmo.to/movies/...` link into JDownloader LinkGrabber.
 
 ---
 
