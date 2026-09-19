@@ -22,7 +22,30 @@ Custom decrypter and hoster plugins for [JDownloader 2](https://jdownloader.org/
 
 ---
 
-### 2. `cdn.woweepaw.de` Hoster Plugin (`CdnWoweepawDe`)
+### 2. Universal `Jellyfin` Hoster Plugin (`JellyfinDirectDownload`)
+
+- **Type**: Hoster Plugin (`jd.plugins.PluginForHost`)
+- **Target Systems**: Any Jellyfin or Emby instance (e.g. `nginxipv6test.b-cdn.net`, `cdn.clawsucht.eu`, etc.)
+- **Supported URLs**: `https?://<domain>/Items/<itemId>/Download(?:\?.*)?`
+- **Source**: [`src/jd/plugins/hoster/JellyfinDirectDownload.java`](src/jd/plugins/hoster/JellyfinDirectDownload.java)
+- **Settings UI** (under **Settings → Plugins → jellyfin**):
+  - **`Default API Key`**: Applied to any URL missing `?api_key=` if no domain rule matches.
+  - **`Default User-Agent`**: Default User-Agent header (default: `VRChat`).
+  - **`Per-Domain Rules` (Multi-line editor)**: Configure API keys and custom User-Agents per server/domain:
+    ```text
+    # Format: domain|apiKey|userAgent
+    nginxipv6test.b-cdn.net|20121df9784646bb850a06edf402e3a0|VRChat
+    cdn.clawsucht.eu||VRChat
+    my-home-jellyfin.net|secret_api_key|MyCustomUA
+    ```
+- **Features**:
+  - Automatically matches the incoming URL domain against your per-domain rules to inject the correct API key and User-Agent.
+  - Resolves filenames and verified file sizes from `Content-Disposition` and `Content-Range`.
+  - Gives clear user guidance if an API key is missing or expired (401/403).
+
+---
+
+### 3. `cdn.woweepaw.de` Hoster Plugin (`CdnWoweepawDe`)
 
 - **Type**: Hoster Plugin (`jd.plugins.PluginForHost`)
 - **Target Worlds**: VRChat **Jellybean** / **Jellybean Movies** (`wrld_275e81ec-c987-40e8-ba07-565a23129e20`)
@@ -34,21 +57,6 @@ Custom decrypter and hoster plugins for [JDownloader 2](https://jdownloader.org/
   - Automatically queries media info with byte-range requests.
   - Resolves real media filenames from `Content-Disposition` (e.g. `"Star Wars - Die Rache der Sith (2005).mp4"`).
   - Retrieves exact file size from `Content-Range`.
-
----
-
-### 3. `nginxipv6test.b-cdn.net` Hoster Plugin (`NginxIpv6TestBCdn`)
-
-- **Type**: Hoster Plugin (`jd.plugins.PluginForHost`)
-- **Target Worlds**: VRChat **Jupiters Sleep World Beta** (`wrld_3315f74d-496a-4c43-a888-c9987a07fc58`)
-- **Supported URLs**: `https://nginxipv6test.b-cdn.net/Items/<itemId>/Download` (with or without `?api_key=...`)
-- **Source**: [`src/jd/plugins/hoster/NginxIpv6TestBCdn.java`](src/jd/plugins/hoster/NginxIpv6TestBCdn.java)
-- **Settings UI**:
-  - `API Key`: Input field in **Settings → Plugins → nginxipv6test.b-cdn.net** for setting the rotating Jellyfin authentication token.
-- **Features**:
-  - If a link is added without an API key, the plugin automatically falls back to the configured token from settings.
-  - Automatically resolves real filenames and sizes from stream headers.
-  - Gives clear user guidance if the token expires (401/403).
 
 ---
 
