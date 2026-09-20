@@ -31,7 +31,14 @@ import org.jdownloader.plugins.config.Order;
 import org.jdownloader.plugins.config.PluginConfigInterface;
 import org.jdownloader.plugins.config.PluginJsonConfig;
 
-@HostPlugin(revision = "$Revision: 2 $", interfaceVersion = 3, names = { "jellyfin" }, urls = { "https?://[^/]+/Items/[a-f0-9]+/Download(?:\\?.*)?" })
+import jd.gui.swing.jdgui.views.settings.components.StateUpdateListener;
+import jd.gui.swing.jdgui.views.settings.components.TextArea;
+import jd.plugins.Plugin;
+import jd.plugins.PluginConfigPanelNG;
+import org.appwork.storage.config.handler.BooleanKeyHandler;
+import org.jdownloader.plugins.config.CustomUI;
+
+@HostPlugin(revision = "$Revision: 3 $", interfaceVersion = 3, names = { "jellyfin" }, urls = { "https?://[^/]+/Items/[a-f0-9]+/Download(?:\\?.*)?" })
 public class JellyfinDirectDownload extends PluginForHost {
 
     private static final String DEFAULT_USER_AGENT = "VRChat";
@@ -48,6 +55,46 @@ public class JellyfinDirectDownload extends PluginForHost {
     @Override
     public Class<JellyfinConfig> getConfigInterface() {
         return JellyfinConfig.class;
+    }
+
+    @Override
+    public PluginConfigPanelNG createConfigPanel() {
+        return new PluginConfigPanelNG() {
+            private TextArea txtRules;
+
+            @Override
+            public void reset() {
+                super.reset();
+                updateContents();
+            }
+
+            @Override
+            public void save() {
+            }
+
+            @Override
+            public void updateContents() {
+                if (txtRules != null) {
+                    JellyfinConfig cfg = PluginJsonConfig.get(getLazyP(), JellyfinConfig.class);
+                    txtRules.setText(cfg.getPerDomainRules());
+                }
+            }
+
+            @Override
+            protected void initPluginSettings(Plugin plugin) {
+                super.initPluginSettings(plugin);
+                final JellyfinConfig cfg = PluginJsonConfig.get(getLazyP(), JellyfinConfig.class);
+                txtRules = new TextArea();
+                txtRules.setText(cfg.getPerDomainRules());
+                txtRules.addStateUpdateListener(new StateUpdateListener() {
+                    @Override
+                    public void onStateUpdated() {
+                        cfg.setPerDomainRules(txtRules.getText());
+                    }
+                });
+                addPair("Per-Domain Rules: domain|apiKey|userAgent (one per line)", (BooleanKeyHandler) null, txtRules);
+            }
+        };
     }
 
     private static class DomainRule {
@@ -279,6 +326,7 @@ public class JellyfinDirectDownload extends PluginForHost {
         public void setDefaultUserAgent(String userAgent);
 
         @AboutConfig
+        @CustomUI
         @MultiLineString
         @DefaultStringValue(value = "# Per-domain/host rules (one per line)\n# Format: domain|apiKey|userAgent\nnginxipv6test.b-cdn.net|20121df9784646bb850a06edf402e3a0|VRChat\ncdn.clawsucht.eu||VRChat\n")
         @DescriptionForConfigEntry(value = "Per-Domain Rules: domain|apiKey|userAgent (one per line)")
